@@ -614,7 +614,7 @@ function registerGuruFace(id) {
 
 
     window.location.href =
-        "Face.html?" +
+        "face.html?" +
         params.toString();
 
 }

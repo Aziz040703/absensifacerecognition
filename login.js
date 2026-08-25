@@ -24,7 +24,7 @@ document.addEventListener(
 
                     // Jika ingin otomatis ke dashboard
                     // uncomment baris berikut:
-                    // window.location.href = "Dashboard.html";
+                    // window.location.href = "dashboard.html";
 
                 }
 
@@ -244,7 +244,7 @@ async function handleLogin(event) {
             function () {
 
                 window.location.href =
-                    "Dashboard.html";
+                    "dashboard.html";
 
             },
             700

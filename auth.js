@@ -67,7 +67,7 @@ function requireLogin() {
     if (!isLoggedIn()) {
 
         window.location.replace(
-            "Login.html"
+            "login.html"
         );
 
         return false;
@@ -138,7 +138,7 @@ function logout() {
     // ================================================
 
     window.location.replace(
-        "Login.html"
+        "login.html"
     );
 }
 

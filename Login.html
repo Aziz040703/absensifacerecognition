@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Login | Sistem Absensi</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: "Segoe UI", Arial, sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background:
+                linear-gradient(
+                    135deg,
+                    #0f172a,
+                    #1e3a8a,
+                    #2563eb
+                );
+            padding: 20px;
+        }
+
+        .login-wrapper {
+            width: 100%;
+            max-width: 430px;
+        }
+
+        .login-card {
+            background: rgba(255,255,255,.97);
+            border-radius: 24px;
+            padding: 40px;
+            box-shadow:
+                0 25px 60px rgba(0,0,0,.25);
+        }
+
+        .logo {
+            width: 75px;
+            height: 75px;
+            margin: 0 auto 20px;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            border-radius: 20px;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #2563eb,
+                    #1d4ed8
+                );
+
+            color: white;
+            font-size: 34px;
+            font-weight: 700;
+
+            box-shadow:
+                0 10px 25px rgba(37,99,235,.35);
+        }
+
+        h1 {
+            text-align: center;
+            color: #0f172a;
+            font-size: 25px;
+            margin-bottom: 8px;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #64748b;
+            font-size: 14px;
+            line-height: 1.6;
+            margin-bottom: 30px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            color: #334155;
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .input-wrapper {
+            position: relative;
+        }
+
+        input {
+            width: 100%;
+            height: 50px;
+
+            border: 1px solid #cbd5e1;
+            border-radius: 12px;
+
+            padding: 0 15px;
+
+            font-size: 14px;
+            outline: none;
+
+            transition: .2s;
+        }
+
+        input:focus {
+            border-color: #2563eb;
+
+            box-shadow:
+                0 0 0 3px
+                rgba(37,99,235,.12);
+        }
+
+        .password-toggle {
+            position: absolute;
+            right: 14px;
+            top: 50%;
+
+            transform: translateY(-50%);
+
+            border: none;
+            background: none;
+
+            cursor: pointer;
+
+            color: #64748b;
+            font-size: 14px;
+        }
+
+        .login-button {
+            width: 100%;
+            height: 52px;
+
+            border: none;
+            border-radius: 12px;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #2563eb,
+                    #1d4ed8
+                );
+
+            color: white;
+
+            font-size: 15px;
+            font-weight: 700;
+
+            cursor: pointer;
+
+            transition: .2s;
+        }
+
+        .login-button:hover {
+            transform: translateY(-1px);
+
+            box-shadow:
+                0 10px 25px
+                rgba(37,99,235,.3);
+        }
+
+        .login-button:disabled {
+            opacity: .65;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .message {
+            display: none;
+
+            margin-bottom: 18px;
+
+            padding: 12px 14px;
+
+            border-radius: 10px;
+
+            font-size: 13px;
+
+            line-height: 1.5;
+        }
+
+        .message.error {
+            display: block;
+
+            background: #fef2f2;
+            color: #b91c1c;
+
+            border: 1px solid #fecaca;
+        }
+
+        .message.success {
+            display: block;
+
+            background: #f0fdf4;
+            color: #15803d;
+
+            border: 1px solid #bbf7d0;
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 25px;
+
+            color: #94a3b8;
+            font-size: 12px;
+            line-height: 1.6;
+        }
+
+        .loading {
+            display: none;
+        }
+
+        .loading.active {
+            display: inline-block;
+        }
+
+        @media (max-width: 480px) {
+
+            .login-card {
+                padding: 30px 22px;
+            }
+
+            h1 {
+                font-size: 22px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="login-wrapper">
+
+    <div class="login-card">
+
+        <div class="logo">
+            A
+        </div>
+
+        <h1>
+            Sistem Absensi
+        </h1>
+
+        <div class="subtitle">
+            Guru dan Karyawan<br>
+            SMK Teuku Umar Semarang
+        </div>
+
+        <div
+            id="message"
+            class="message">
+        </div>
+
+        <form
+            id="loginForm"
+            onsubmit="handleLogin(event)">
+
+            <div class="form-group">
+
+                <label for="username">
+                    Username
+                </label>
+
+                <input
+                    type="text"
+                    id="username"
+                    placeholder="Masukkan username"
+                    autocomplete="username"
+                    required>
+
+            </div>
+
+            <div class="form-group">
+
+                <label for="password">
+                    Password
+                </label>
+
+                <div class="input-wrapper">
+
+                    <input
+                        type="password"
+                        id="password"
+                        placeholder="Masukkan password"
+                        autocomplete="current-password"
+                        required>
+
+                    <button
+                        type="button"
+                        class="password-toggle"
+                        onclick="togglePassword()">
+
+                        Lihat
+
+                    </button>
+
+                </div>
+
+            </div>
+
+            <button
+                type="submit"
+                id="loginButton"
+                class="login-button">
+
+                <span id="loginText">
+                    Masuk ke Sistem
+                </span>
+
+                <span
+                    id="loading"
+                    class="loading">
+
+                    Memproses...
+
+                </span>
+
+            </button>
+
+        </form>
+
+        <div class="footer">
+            Sistem Absensi Berbasis Web<br>
+            Face Recognition & GPS Lock
+        </div>
+
+    </div>
+
+</div>
+
+<script src="Api.js"></script>
+<script src="Login.js"></script>
+
+</body>
+</html>

@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Absensi Face Recognition</title>
+
+    <script src="https://cdn.jsdelivr.net/npm/face-api.js@0.22.2/dist/face-api.min.js"></script>
+
+    <script src="Config.js"></script>
+    <script src="Api.js"></script>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            background: #f4f7fb;
+            font-family: Arial, Helvetica, sans-serif;
+            color: #172033;
+        }
+
+        .page {
+            min-height: 100vh;
+            padding: 35px 20px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1100px;
+            margin: auto;
+        }
+
+        .header {
+            background: #ffffff;
+            border-radius: 18px;
+            padding: 25px 30px;
+            margin-bottom: 24px;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, .06);
+        }
+
+        .header h1 {
+            margin: 0;
+            font-size: 27px;
+            font-weight: 700;
+        }
+
+        .header p {
+            margin: 8px 0 0;
+            color: #6b7280;
+            font-size: 14px;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: minmax(0, 1.4fr) minmax(300px, .8fr);
+            gap: 24px;
+        }
+
+        .card {
+            background: #ffffff;
+            border-radius: 18px;
+            padding: 24px;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, .06);
+        }
+
+        .card-title {
+            margin: 0 0 18px;
+            font-size: 18px;
+            font-weight: 700;
+        }
+
+        .camera-box {
+            width: 100%;
+            aspect-ratio: 4 / 3;
+            background: #111827;
+            border-radius: 15px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        #videoAbsensi {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+            transform: scaleX(-1);
+        }
+
+        .camera-placeholder {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #9ca3af;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .camera-placeholder.hidden {
+            display: none;
+        }
+
+        .status {
+            margin-top: 16px;
+            padding: 13px 15px;
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .status.info {
+            background: #eff6ff;
+            color: #1d4ed8;
+        }
+
+        .status.success {
+            background: #ecfdf5;
+            color: #047857;
+        }
+
+        .status.warning {
+            background: #fffbeb;
+            color: #b45309;
+        }
+
+        .status.error {
+            background: #fef2f2;
+            color: #b91c1c;
+        }
+
+        .buttons {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-top: 18px;
+        }
+
+        button {
+            border: none;
+            border-radius: 10px;
+            padding: 13px 16px;
+            font-size: 14px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: .2s;
+        }
+
+        button:hover:not(:disabled) {
+            transform: translateY(-1px);
+        }
+
+        button:disabled {
+            opacity: .5;
+            cursor: not-allowed;
+        }
+
+        .btn-camera {
+            background: #2563eb;
+            color: #ffffff;
+        }
+
+        .btn-identifikasi {
+            background: #059669;
+            color: #ffffff;
+        }
+
+        .btn-absen {
+            width: 100%;
+            margin-top: 12px;
+            background: #111827;
+            color: #ffffff;
+        }
+
+        .result {
+            margin-top: 18px;
+            border: 1px solid #e5e7eb;
+            border-radius: 13px;
+            overflow: hidden;
+        }
+
+        .result-header {
+            padding: 14px 16px;
+            background: #f8fafc;
+            border-bottom: 1px solid #e5e7eb;
+            font-weight: 700;
+        }
+
+        .result-row {
+            display: flex;
+            justify-content: space-between;
+            gap: 20px;
+            padding: 13px 16px;
+            border-bottom: 1px solid #f1f5f9;
+        }
+
+        .result-row:last-child {
+            border-bottom: none;
+        }
+
+        .label {
+            color: #6b7280;
+        }
+
+        .value {
+            font-weight: 700;
+            text-align: right;
+            word-break: break-word;
+        }
+
+        .face-count {
+            padding: 15px;
+            background: #f8fafc;
+            border-radius: 12px;
+            margin-bottom: 18px;
+        }
+
+        .face-count strong {
+            display: block;
+            font-size: 28px;
+            margin-top: 5px;
+        }
+
+        .loading {
+            color: #6b7280;
+            font-size: 14px;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        @media (max-width: 800px) {
+            .grid {
+                grid-template-columns: 1fr;
+            }
+
+            .buttons {
+                grid-template-columns: 1fr;
+            }
+
+            .page {
+                padding: 20px 12px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="page">
+
+    <div class="container">
+
+        <div class="header">
+            <h1>Absensi Guru & Karyawan</h1>
+            <p>
+                Sistem absensi menggunakan teknologi
+                Face Recognition berbasis web.
+            </p>
+        </div>
+
+
+        <div class="grid">
+
+            <!-- =========================
+                 KAMERA
+            ========================== -->
+            <div class="card">
+
+                <h2 class="card-title">
+                    Kamera Absensi
+                </h2>
+
+                <div class="camera-box">
+
+                    <video
+                        id="videoAbsensi"
+                        autoplay
+                        muted
+                        playsinline>
+                    </video>
+
+                    <div
+                        id="cameraPlaceholder"
+                        class="camera-placeholder">
+
+                        Klik
+                        <strong>
+                            "Mulai Kamera"
+                        </strong>
+                        untuk memulai.
+
+                    </div>
+
+                </div>
+
+
+                <div
+                    id="statusFace"
+                    class="status info">
+
+                    Memuat sistem...
+
+                </div>
+
+
+                <div class="buttons">
+
+                    <button
+                        id="btnKamera"
+                        class="btn-camera"
+                        type="button">
+
+                        Mulai Kamera
+
+                    </button>
+
+
+                    <button
+                        id="btnIdentifikasi"
+                        class="btn-identifikasi"
+                        type="button"
+                        disabled>
+
+                        Identifikasi Wajah
+
+                    </button>
+
+                </div>
+
+
+                <button
+                    id="btnAbsen"
+                    class="btn-absen"
+                    type="button"
+                    disabled>
+
+                    Simpan Absensi
+
+                </button>
+
+            </div>
+
+
+            <!-- =========================
+                 HASIL
+            ========================== -->
+            <div class="card">
+
+                <h2 class="card-title">
+                    Hasil Identifikasi
+                </h2>
+
+
+                <div class="face-count">
+
+                    <span>
+                        Wajah terdaftar
+                    </span>
+
+                    <strong
+                        id="jumlahWajah">
+                        -
+                    </strong>
+
+                </div>
+
+
+                <div
+                    id="hasilAbsensi"
+                    class="result">
+
+                    <div class="result-header">
+                        Status Identifikasi
+                    </div>
+
+                    <div class="result-row">
+                        <span class="label">
+                            ID
+                        </span>
+
+                        <span
+                            id="hasilId"
+                            class="value">
+                            -
+                        </span>
+                    </div>
+
+                    <div class="result-row">
+                        <span class="label">
+                            NIP
+                        </span>
+
+                        <span
+                            id="hasilNip"
+                            class="value">
+                            -
+                        </span>
+                    </div>
+
+                    <div class="result-row">
+                        <span class="label">
+                            Nama
+                        </span>
+
+                        <span
+                            id="hasilNama"
+                            class="value">
+                            -
+                        </span>
+                    </div>
+
+                    <div class="result-row">
+                        <span class="label">
+                            Jabatan
+                        </span>
+
+                        <span
+                            id="hasilJabatan"
+                            class="value">
+                            -
+                        </span>
+                    </div>
+
+                    <div class="result-row">
+                        <span class="label">
+                            Status
+                        </span>
+
+                        <span
+                            id="hasilStatus"
+                            class="value">
+                            Belum diidentifikasi
+                        </span>
+                    </div>
+
+                    <div class="result-row">
+                        <span class="label">
+                            Distance
+                        </span>
+
+                        <span
+                            id="hasilDistance"
+                            class="value">
+                            -
+                        </span>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<script src="Absensi.js"></script>
+
+</body>
+</html>

@@ -1,0 +1,3549 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Dashboard | Sistem Absensi</title>
+
+    <script>
+
+(function () {
+
+    const session =
+        localStorage.getItem(
+            "absensi_session"
+        );
+
+    if (!session) {
+
+        window.location.href =
+            "Login.html";
+
+    }
+
+})();
+
+</script>
+    <style>
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+
+        :root {
+
+            --primary: #2563eb;
+            --primary-dark: #1d4ed8;
+
+            --sidebar: #111827;
+            --sidebar-hover: #1f2937;
+
+            --background: #f3f6fb;
+            --card: #ffffff;
+
+            --text: #111827;
+            --muted: #6b7280;
+
+            --border: #e5e7eb;
+
+            --green: #16a34a;
+            --green-bg: #dcfce7;
+
+            --blue-bg: #dbeafe;
+
+            --orange: #d97706;
+            --orange-bg: #fef3c7;
+
+            --red: #dc2626;
+            --red-bg: #fee2e2;
+
+            --shadow:
+                0 8px 25px rgba(15, 23, 42, .06);
+
+        }
+
+
+        body {
+
+            font-family:
+                Inter,
+                "Segoe UI",
+                Arial,
+                sans-serif;
+
+            background:
+                var(--background);
+
+            color:
+                var(--text);
+
+            min-height: 100vh;
+
+        }
+
+
+        /* ==============================
+           SIDEBAR
+        ============================== */
+
+        .sidebar {
+
+            position: fixed;
+
+            left: 0;
+            top: 0;
+            bottom: 0;
+
+            width: 250px;
+
+            background:
+                var(--sidebar);
+
+            color: white;
+
+            padding: 22px 14px;
+
+            z-index: 1000;
+
+        }
+
+
+        .brand {
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 12px;
+
+            padding:
+                8px 12px 25px;
+
+            border-bottom:
+                1px solid
+                rgba(255,255,255,.08);
+
+            margin-bottom: 20px;
+
+        }
+
+
+        .sekolah-logo {
+
+            width: 48px;
+            height: 48px;
+
+            flex-shrink: 0;
+
+            display: flex;
+
+            align-items: center;
+            justify-content: center;
+
+            background: white;
+
+            border-radius: 50%;
+
+            padding: 3px;
+
+            overflow: hidden;
+
+        }
+
+
+        .sekolah-logo img {
+
+            width: 100%;
+            height: 100%;
+
+            object-fit: contain;
+
+            display: block;
+
+        }
+
+
+        .brand-text {
+            min-width: 0;
+        }
+
+
+        .brand-title {
+
+            font-size: 14px;
+
+            font-weight: 800;
+
+            color: white;
+
+            white-space: nowrap;
+
+        }
+
+
+        .brand-subtitle {
+
+            font-size: 10px;
+
+            color: #9ca3af;
+
+            margin-top: 3px;
+
+            letter-spacing: 1px;
+
+        }
+
+
+        .menu-title {
+
+            font-size: 10px;
+
+            text-transform: uppercase;
+
+            letter-spacing: 1px;
+
+            color:
+                #6b7280;
+
+            padding:
+                0 12px 8px;
+
+        }
+
+
+        .nav-link {
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 12px;
+
+            padding:
+                12px;
+
+            margin-bottom: 5px;
+
+            border-radius: 10px;
+
+            color:
+                #d1d5db;
+
+            text-decoration: none;
+
+            font-size: 14px;
+
+            transition: .2s;
+
+        }
+
+
+        .nav-link:hover {
+
+            background:
+                var(--sidebar-hover);
+
+            color: white;
+
+        }
+
+
+        .nav-link.active {
+
+            background:
+                var(--primary);
+
+            color: white;
+
+            box-shadow:
+                0 5px 15px
+                rgba(37,99,235,.25);
+
+        }
+
+
+        .nav-icon {
+
+            width: 25px;
+
+            text-align: center;
+
+            font-size: 18px;
+
+        }
+
+
+        .sidebar-footer {
+
+            position: absolute;
+
+            left: 14px;
+            right: 14px;
+            bottom: 18px;
+
+            padding: 13px;
+
+            border-radius: 10px;
+
+            background:
+                rgba(255,255,255,.05);
+
+            color:
+                #9ca3af;
+
+            font-size: 11px;
+
+            line-height: 1.5;
+
+        }
+
+
+        /* ==============================
+           MAIN
+        ============================== */
+
+        .main {
+
+            margin-left: 250px;
+
+            min-height: 100vh;
+
+        }
+
+
+        .topbar {
+
+            height: 72px;
+
+            background:
+                white;
+
+            border-bottom:
+                1px solid
+                var(--border);
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content:
+                space-between;
+
+            padding:
+                0 30px;
+
+        }
+
+
+        .page-title h1 {
+
+            font-size: 21px;
+
+            font-weight: 700;
+
+        }
+
+
+        .page-title p {
+
+            color:
+                var(--muted);
+
+            font-size: 12px;
+
+            margin-top: 3px;
+
+        }
+
+
+        .topbar-right {
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 18px;
+
+        }
+
+
+        .clock {
+
+            text-align: right;
+
+        }
+
+
+        .clock-time {
+
+            font-size: 17px;
+
+            font-weight: 700;
+
+        }
+
+
+        .clock-date {
+
+            font-size: 11px;
+
+            color:
+                var(--muted);
+
+            margin-top: 2px;
+
+        }
+
+
+        .admin {
+
+            width: 38px;
+            height: 38px;
+
+            border-radius: 50%;
+
+            display: flex;
+
+            align-items: center;
+            justify-content: center;
+
+            background:
+                var(--blue-bg);
+
+            color:
+                var(--primary);
+
+            font-weight: 700;
+
+        }
+
+
+        .content {
+
+            padding: 28px 30px;
+
+        }
+
+
+        /* ==============================
+           WELCOME
+        ============================== */
+
+        .welcome {
+
+            background:
+                linear-gradient(
+                    120deg,
+                    #2563eb,
+                    #4f46e5
+                );
+
+            color: white;
+
+            border-radius: 18px;
+
+            padding: 25px 28px;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content:
+                space-between;
+
+            margin-bottom: 24px;
+
+            box-shadow:
+                0 12px 30px
+                rgba(37,99,235,.18);
+
+        }
+
+
+        .welcome h2 {
+
+            font-size: 23px;
+
+            margin-bottom: 6px;
+
+        }
+
+
+        .welcome p {
+
+            font-size: 13px;
+
+            color:
+                rgba(255,255,255,.82);
+
+        }
+
+
+        .welcome-icon {
+
+            font-size: 55px;
+
+            opacity: .85;
+
+        }
+
+
+        /* ==============================
+           STATISTICS
+        ============================== */
+
+        .stats {
+
+            display: grid;
+
+            grid-template-columns:
+                repeat(4, 1fr);
+
+            gap: 16px;
+
+            margin-bottom: 24px;
+
+        }
+
+
+        .stat-card {
+
+            background:
+                var(--card);
+
+            border:
+                1px solid
+                var(--border);
+
+            border-radius: 15px;
+
+            padding: 19px;
+
+            box-shadow:
+                var(--shadow);
+
+        }
+
+
+        .stat-top {
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content:
+                space-between;
+
+        }
+
+
+        .stat-label {
+
+            font-size: 12px;
+
+            color:
+                var(--muted);
+
+        }
+
+
+        .stat-icon {
+
+            width: 40px;
+            height: 40px;
+
+            border-radius: 11px;
+
+            display: flex;
+
+            align-items: center;
+            justify-content: center;
+
+            font-size: 19px;
+
+        }
+
+
+        .icon-blue {
+
+            background:
+                var(--blue-bg);
+
+        }
+
+
+        .icon-green {
+
+            background:
+                var(--green-bg);
+
+        }
+
+
+        .icon-orange {
+
+            background:
+                var(--orange-bg);
+
+        }
+
+
+        .icon-purple {
+
+            background:
+                #ede9fe;
+
+        }
+
+
+        .stat-value {
+
+            font-size: 28px;
+
+            font-weight: 750;
+
+            margin-top: 14px;
+
+        }
+
+
+        .stat-info {
+
+            font-size: 11px;
+
+            color:
+                var(--muted);
+
+            margin-top: 5px;
+
+        }
+
+
+        /* ==============================
+           GRID CONTENT
+        ============================== */
+
+        .dashboard-grid {
+
+            display: grid;
+
+            grid-template-columns:
+                1.6fr 1fr;
+
+            gap: 20px;
+
+        }
+
+
+        .panel {
+
+            background:
+                white;
+
+            border:
+                1px solid
+                var(--border);
+
+            border-radius: 16px;
+
+            box-shadow:
+                var(--shadow);
+
+            overflow: hidden;
+
+        }
+
+
+        .panel-header {
+
+            padding:
+                18px 20px;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content:
+                space-between;
+
+            border-bottom:
+                1px solid
+                var(--border);
+
+        }
+
+
+        .panel-title {
+
+            font-size: 15px;
+
+            font-weight: 700;
+
+        }
+
+
+        .panel-subtitle {
+
+            font-size: 11px;
+
+            color:
+                var(--muted);
+
+            margin-top: 3px;
+
+        }
+
+
+        .panel-link {
+
+            color:
+                var(--primary);
+
+            font-size: 12px;
+
+            text-decoration: none;
+
+            font-weight: 600;
+
+        }
+
+
+        /* ==============================
+           ATTENDANCE
+        ============================== */
+
+        .attendance-list {
+
+            padding: 5px 20px 15px;
+
+        }
+
+
+        .attendance-item {
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 12px;
+
+            padding: 13px 0;
+
+            border-bottom:
+                1px solid
+                #f0f1f3;
+
+        }
+
+
+        .attendance-item:last-child {
+
+            border-bottom: none;
+
+        }
+
+
+        .person-avatar {
+
+            width: 38px;
+            height: 38px;
+
+            flex-shrink: 0;
+
+            border-radius: 50%;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #dbeafe,
+                    #e0e7ff
+                );
+
+            color:
+                var(--primary);
+
+            display: flex;
+
+            align-items: center;
+            justify-content: center;
+
+            font-size: 13px;
+
+            font-weight: 700;
+
+        }
+
+
+        .person-info {
+
+            flex: 1;
+
+            min-width: 0;
+
+        }
+
+
+        .person-name {
+
+            font-size: 13px;
+
+            font-weight: 650;
+
+            white-space: nowrap;
+
+            overflow: hidden;
+
+            text-overflow: ellipsis;
+
+        }
+
+
+        .person-detail {
+
+            color:
+                var(--muted);
+
+            font-size: 10px;
+
+            margin-top: 3px;
+
+        }
+
+
+        .attendance-time {
+
+            text-align: right;
+
+            font-size: 11px;
+
+            color:
+                var(--muted);
+
+        }
+
+
+        .badge {
+
+            display: inline-block;
+
+            padding:
+                4px 9px;
+
+            border-radius: 20px;
+
+            font-size: 10px;
+
+            font-weight: 700;
+
+            margin-top: 4px;
+
+        }
+
+
+        .badge-masuk {
+
+            color:
+                #166534;
+
+            background:
+                var(--green-bg);
+
+        }
+
+
+        .badge-pulang {
+
+            color:
+                #1e40af;
+
+            background:
+                var(--blue-bg);
+
+        }
+
+
+        /* ==============================
+           RIGHT PANEL
+        ============================== */
+
+        .quick-actions {
+
+            padding: 18px;
+
+            display: grid;
+
+            grid-template-columns:
+                repeat(2, 1fr);
+
+            gap: 10px;
+
+        }
+
+
+        .quick-action {
+
+            text-decoration: none;
+
+            color:
+                var(--text);
+
+            padding: 15px;
+
+            border:
+                1px solid
+                var(--border);
+
+            border-radius: 12px;
+
+            transition: .2s;
+
+        }
+
+
+        .quick-action:hover {
+
+            border-color:
+                #bfdbfe;
+
+            background:
+                #f8fbff;
+
+            transform:
+                translateY(-2px);
+
+        }
+
+
+        .quick-icon {
+
+            font-size: 23px;
+
+            margin-bottom: 9px;
+
+        }
+
+
+        .quick-title {
+
+            font-size: 12px;
+
+            font-weight: 700;
+
+        }
+
+
+        .quick-desc {
+
+            color:
+                var(--muted);
+
+            font-size: 10px;
+
+            margin-top: 3px;
+
+        }
+
+
+        /* ==============================
+           ATTENDANCE RATE
+        ============================== */
+
+        .rate-box {
+
+            padding: 20px;
+
+        }
+
+
+        .rate-number {
+
+            font-size: 40px;
+
+            font-weight: 800;
+
+            color:
+                var(--primary);
+
+            text-align: center;
+
+            margin: 10px 0 15px;
+
+        }
+
+
+        .progress {
+
+            width: 100%;
+
+            height: 9px;
+
+            border-radius: 20px;
+
+            background:
+                #e5e7eb;
+
+            overflow: hidden;
+
+        }
+
+
+        .progress-bar {
+
+            height: 100%;
+
+            width: 0%;
+
+            background:
+                linear-gradient(
+                    90deg,
+                    #2563eb,
+                    #4f46e5
+                );
+
+            border-radius: 20px;
+
+            transition:
+                width .5s ease;
+
+        }
+
+
+        .rate-description {
+
+            text-align: center;
+
+            color:
+                var(--muted);
+
+            font-size: 11px;
+
+            margin-top: 10px;
+
+        }
+
+
+        /* ==============================
+           EMPTY
+        ============================== */
+
+        .empty {
+
+            text-align: center;
+
+            padding: 35px 15px;
+
+            color:
+                var(--muted);
+
+            font-size: 12px;
+
+        }
+
+
+        /* ==============================
+           MOBILE
+        ============================== */
+
+        @media(max-width: 1000px) {
+
+            .stats {
+
+                grid-template-columns:
+                    repeat(2, 1fr);
+
+            }
+
+            .dashboard-grid {
+
+                grid-template-columns: 1fr;
+
+            }
+
+        }
+
+
+        @media(max-width: 700px) {
+
+            .sidebar {
+
+                width: 70px;
+
+                padding:
+                    15px 8px;
+
+            }
+
+            .brand {
+
+                justify-content: center;
+
+                padding:
+                    5px 0 20px;
+
+            }
+
+            .brand-title,
+            .brand-subtitle,
+            .menu-title,
+            .nav-link span:not(.nav-icon),
+            .sidebar-footer {
+
+                display: none;
+
+            }
+
+            .nav-link {
+
+                justify-content: center;
+
+            }
+
+            .main {
+
+                margin-left: 70px;
+
+            }
+
+            .topbar {
+
+                padding:
+                    0 15px;
+
+            }
+
+            .content {
+
+                padding:
+                    20px 15px;
+
+            }
+
+            .welcome {
+
+                padding: 20px;
+
+            }
+
+            .welcome-icon {
+
+                display: none;
+
+            }
+
+        }
+
+
+        @media(max-width: 500px) {
+
+            .stats {
+
+                grid-template-columns: 1fr;
+
+            }
+
+            .clock {
+
+                display: none;
+
+            }
+
+            .welcome h2 {
+
+                font-size: 19px;
+
+            }
+
+        }
+        .welcome-content {
+    flex: 1;
+}
+
+
+.welcome-school {
+
+    font-size: 12px;
+
+    font-weight: 700;
+
+    letter-spacing: 1.2px;
+
+    color:
+        rgba(255,255,255,.85);
+
+    margin-bottom: 8px;
+
+}
+
+
+.welcome h2 {
+
+    font-size: 25px;
+
+    margin-bottom: 5px;
+
+}
+
+
+.welcome p {
+
+    font-size: 13px;
+
+    color:
+        rgba(255,255,255,.85);
+
+}
+
+
+.welcome-info {
+
+    display: flex;
+
+    flex-wrap: wrap;
+
+    gap: 18px;
+
+    margin-top: 16px;
+
+    font-size: 11px;
+
+    color:
+        rgba(255,255,255,.8);
+
+}
+
+
+.welcome-logo {
+
+    width: 105px;
+    height: 105px;
+
+    background: white;
+
+    border-radius: 50%;
+
+    padding: 6px;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    box-shadow:
+        0 8px 25px
+        rgba(0,0,0,.15);
+
+}
+
+
+.welcome-logo img {
+
+    width: 100%;
+    height: 100%;
+
+    object-fit: contain;
+
+}
+/* =========================================
+   INTERNAL PAGE / ABSENSI
+========================================= */
+
+#dashboardPageContainer {
+    width: 100%;
+    min-height: calc(100vh - 110px);
+}
+
+#internalPageFrame {
+    display: none;
+    width: 100%;
+    height: calc(100vh - 125px);
+    min-height: 700px;
+    border: 0;
+    border-radius: 18px;
+    background: #ffffff;
+    box-shadow: 0 8px 30px rgba(0,0,0,.06);
+}
+
+body.internal-page-active .dashboard-content {
+    display: none;
+}
+
+body.internal-page-active #internalPageFrame {
+    display: block;
+}
+/* =========================================================
+   ABSENSI VIEW
+========================================================= */
+
+#absensiView {
+    display: none;
+}
+
+#absensiView.active {
+    display: block;
+}
+
+.absensi-page {
+    width: 100%;
+}
+
+.absensi-header {
+    background: #ffffff;
+    border-radius: 18px;
+    padding: 25px 30px;
+    margin-bottom: 24px;
+    box-shadow: 0 8px 30px rgba(0,0,0,.06);
+}
+
+.absensi-header h2 {
+    margin: 0;
+    font-size: 25px;
+    font-weight: 750;
+    color: #111827;
+}
+
+.absensi-header p {
+    margin: 8px 0 0;
+    color: #6b7280;
+    font-size: 13px;
+}
+
+.absensi-grid {
+    display: grid;
+    grid-template-columns:
+        minmax(0, 1.4fr)
+        minmax(300px, .8fr);
+
+    gap: 24px;
+}
+
+.absensi-card {
+    background: #ffffff;
+    border-radius: 18px;
+    padding: 24px;
+    box-shadow: 0 8px 30px rgba(0,0,0,.06);
+}
+
+.absensi-card-title {
+    margin: 0 0 18px;
+    font-size: 18px;
+    font-weight: 700;
+}
+
+.absensi-camera-box {
+    width: 100%;
+    aspect-ratio: 4 / 3;
+    background: #111827;
+    border-radius: 15px;
+    overflow: hidden;
+    position: relative;
+}
+
+#videoAbsensi {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    transform: scaleX(-1);
+}
+
+.absensi-camera-placeholder {
+    position: absolute;
+    inset: 0;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    color: #9ca3af;
+    text-align: center;
+    padding: 20px;
+}
+
+.absensi-camera-placeholder.hidden {
+    display: none;
+}
+
+#statusFace {
+    margin-top: 16px;
+    padding: 13px 15px;
+    border-radius: 10px;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+#statusFace.info {
+    background: #eff6ff;
+    color: #1d4ed8;
+}
+
+#statusFace.success {
+    background: #ecfdf5;
+    color: #047857;
+}
+
+#statusFace.warning {
+    background: #fffbeb;
+    color: #b45309;
+}
+
+#statusFace.error {
+    background: #fef2f2;
+    color: #b91c1c;
+}
+
+.absensi-buttons {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-top: 18px;
+}
+
+.absensi-buttons button,
+#btnAbsen {
+    border: none;
+    border-radius: 10px;
+    padding: 13px 16px;
+
+    font-size: 14px;
+    font-weight: 700;
+
+    cursor: pointer;
+    transition: .2s;
+}
+
+.absensi-buttons button:hover:not(:disabled),
+#btnAbsen:hover:not(:disabled) {
+    transform: translateY(-1px);
+}
+
+.absensi-buttons button:disabled,
+#btnAbsen:disabled {
+    opacity: .5;
+    cursor: not-allowed;
+}
+
+#btnKamera {
+    background: #2563eb;
+    color: #ffffff;
+}
+
+#btnIdentifikasi {
+    background: #059669;
+    color: #ffffff;
+}
+
+#btnAbsen {
+    width: 100%;
+    margin-top: 12px;
+    background: #111827;
+    color: #ffffff;
+}
+
+.absensi-face-count {
+    padding: 15px;
+    background: #f8fafc;
+    border-radius: 12px;
+    margin-bottom: 18px;
+}
+
+.absensi-face-count span {
+    color: #6b7280;
+    font-size: 13px;
+}
+
+.absensi-face-count strong {
+    display: block;
+    font-size: 28px;
+    margin-top: 5px;
+}
+
+.absensi-result {
+    margin-top: 18px;
+    border: 1px solid #e5e7eb;
+    border-radius: 13px;
+    overflow: hidden;
+}
+
+.absensi-result-header {
+    padding: 14px 16px;
+    background: #f8fafc;
+    border-bottom: 1px solid #e5e7eb;
+    font-weight: 700;
+}
+
+.absensi-result-row {
+    display: flex;
+    justify-content: space-between;
+    gap: 20px;
+
+    padding: 13px 16px;
+
+    border-bottom: 1px solid #f1f5f9;
+}
+
+.absensi-result-row:last-child {
+    border-bottom: none;
+}
+
+.absensi-label {
+    color: #6b7280;
+}
+
+.absensi-value {
+    font-weight: 700;
+    text-align: right;
+    word-break: break-word;
+}
+
+@media (max-width: 900px) {
+
+    .absensi-grid {
+        grid-template-columns: 1fr;
+    }
+
+}
+
+@media (max-width: 600px) {
+
+    .absensi-buttons {
+        grid-template-columns: 1fr;
+    }
+
+}
+.logout-btn {
+
+    display: inline-flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    gap: 8px;
+
+    padding: 10px 16px;
+
+    border: none;
+
+    border-radius: 10px;
+
+    background: #ef4444;
+
+    color: #ffffff;
+
+    font-size: 14px;
+
+    font-weight: 600;
+
+    cursor: pointer;
+
+    transition:
+        background .2s ease,
+        transform .2s ease,
+        box-shadow .2s ease;
+}
+
+.logout-btn:hover {
+
+    background: #dc2626;
+
+    transform: translateY(-1px);
+
+    box-shadow:
+        0 6px 16px
+        rgba(239, 68, 68, .25);
+}
+
+.logout-btn:active {
+
+    transform: translateY(0);
+
+}
+
+.logout-icon {
+
+    font-size: 17px;
+
+    font-weight: 700;
+}
+/* =====================================================
+   SIDEBAR BOTTOM
+===================================================== */
+
+.sidebar-bottom {
+    margin-top: auto;
+    padding-top: 18px;
+    border-top: 1px solid rgba(255,255,255,.08);
+}
+
+
+/* =====================================================
+   FOOTER SIDEBAR
+===================================================== */
+
+.sidebar-footer {
+    margin-top: 0 0 12px 0;
+    padding: 12px 14px;
+
+    background: rgba(255,255,255,.045);
+
+    border: 1px solid rgba(255,255,255,.06);
+
+    border-radius: 12px;
+
+    text-align: left;
+}
+
+.footer-title {
+    color: #ffffff;
+
+    font-size: 12px;
+
+    font-weight: 700;
+
+    margin-bottom: 3px;
+}
+
+.footer-subtitle {
+    color: rgba(255,255,255,.45);
+
+    font-size: 10px;
+
+    line-height: 1.4;
+}
+
+
+/* =====================================================
+   LOGOUT BUTTON
+===================================================== */
+
+.logout-btn {
+    width: 100%;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+
+    gap: 11px;
+
+    padding: 12px 14px;
+
+    border: 1px solid rgba(239,68,68,.18);
+
+    border-radius: 11px;
+
+    background: rgba(239,68,68,.08);
+
+    color: #fca5a5;
+
+    font-family: inherit;
+
+    font-size: 13px;
+
+    font-weight: 600;
+
+    cursor: pointer;
+
+    transition:
+        all .2s ease;
+}
+
+
+/* ICON */
+
+.logout-icon {
+    width: 28px;
+    height: 28px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 8px;
+
+    background: rgba(239,68,68,.14);
+
+    color: #f87171;
+
+    font-size: 17px;
+
+    font-weight: 700;
+
+    transition: .2s ease;
+}
+
+
+/* TEXT */
+
+.logout-text {
+    flex: 1;
+
+    text-align: left;
+}
+
+
+/* HOVER */
+
+.logout-btn:hover {
+
+    background: rgba(239,68,68,.16);
+
+    border-color:
+        rgba(239,68,68,.35);
+
+    color: #ffffff;
+
+    transform: translateY(-1px);
+
+    box-shadow:
+        0 6px 18px
+        rgba(239,68,68,.10);
+}
+
+
+/* ICON HOVER */
+
+.logout-btn:hover .logout-icon {
+
+    background: #ef4444;
+
+    color: #ffffff;
+
+    transform: translateX(2px);
+}
+
+
+/* ACTIVE */
+
+.logout-btn:active {
+
+    transform: translateY(0);
+
+    box-shadow: none;
+}
+    </style>
+<script src="https://cdn.jsdelivr.net/npm/face-api.js@0.22.2/dist/face-api.min.js"></script>
+<script src="Config.js"></script>
+<script src="Api.js"></script>
+<script src="Auth.js"></script>
+<script src="Dashboard.js"></script>
+</head>
+
+
+<body>
+
+
+<!-- =========================================
+     SIDEBAR
+========================================= -->
+
+<aside class="sidebar">
+
+    <div class="brand">
+
+    <div class="brand-logo sekolah-logo">
+        <img
+            src="https://smkteukuumar.sch.id/wp-content/uploads/2024/07/logo-smk-tu.png"
+            alt="Logo SMK Teuku Umar Semarang"
+        >
+    </div>
+
+    <div class="brand-text">
+
+        <div class="brand-title">
+            SMK TEUKU UMAR
+        </div>
+
+        <div class="brand-subtitle">
+            SEMARANG
+        </div>
+
+    </div>
+
+</div>
+
+
+    <div class="menu-title">
+        Menu Utama
+    </div>
+
+
+    <a
+        href="dashboard.html"
+        class="nav-link active"
+    >
+
+        <div class="nav-icon">
+            🏠
+        </div>
+
+        <span>
+            Dashboard
+        </span>
+
+    </a>
+
+
+    <a
+    href="#"
+    class="nav-link"
+    id="menuAbsensi"
+    data-page="absensi"
+>
+
+        <div class="nav-icon">
+            📷
+        </div>
+
+        <span>
+            Absensi
+        </span>
+
+    </a>
+
+
+    <a
+        href="laporan.html"
+        class="nav-link"
+    >
+
+        <div class="nav-icon">
+            📊
+        </div>
+
+        <span>
+            Laporan
+        </span>
+
+    </a>
+
+
+    <div
+        class="menu-title"
+        style="margin-top:18px;"
+    >
+        Master Data
+    </div>
+
+
+    <a
+        href="guru.html"
+        class="nav-link"
+    >
+
+        <div class="nav-icon">
+            👨‍🏫
+        </div>
+
+        <span>
+            Data Guru
+        </span>
+
+    </a>
+
+
+    <a
+        href="karyawan.html"
+        class="nav-link"
+    >
+
+        <div class="nav-icon">
+            👨‍💼
+        </div>
+
+        <span>
+            Data Karyawan
+        </span>
+
+    </a>
+
+
+    <a
+        href="face.html"
+        class="nav-link"
+    >
+
+        <div class="nav-icon">
+            🧑
+        </div>
+
+        <span>
+            Registrasi Wajah
+        </span>
+
+    </a>
+    <div
+    class="menu-title"
+    style="margin-top:18px;"
+>
+    Sistem
+</div>
+
+<a
+    href="settings.html"
+    class="nav-link"
+>
+    <div class="nav-icon">
+        ⚙️
+    </div>
+
+    <span>
+        Pengaturan
+    </span>
+</a>
+
+
+<!-- ===============================
+     LOGOUT
+================================ -->
+
+<!-- ===============================
+     SIDEBAR BOTTOM
+================================ -->
+
+<div class="sidebar-bottom">
+    <!-- LOGOUT -->
+    <button
+        type="button"
+        class="logout-btn"
+        onclick="logout()"
+    >
+        <span class="logout-icon">
+            ↪
+        </span>
+
+        <span class="logout-text">
+            Logout
+        </span>
+    </button>
+
+</div>
+    <!-- INFO SISTEM -->
+    <div class="sidebar-footer">
+        <div class="footer-title">
+            Sistem Absensi
+        </div>
+
+        <div class="footer-subtitle">
+            Face Recognition berbasis Web
+        </div>
+    </div>
+
+</aside>
+
+
+<!-- =========================================
+     MAIN
+========================================= -->
+
+<main class="main">
+
+
+    <!-- TOPBAR -->
+
+    <header class="topbar">
+
+        <div class="page-title">
+
+            <h1>
+                Dashboard
+            </h1>
+
+            <p>
+                Ringkasan aktivitas absensi hari ini
+            </p>
+
+        </div>
+
+
+        <div class="topbar-right">
+
+            <div class="clock">
+
+                <div
+                    id="jam"
+                    class="clock-time"
+                >
+                    00:00:00
+                </div>
+
+                <div
+                    id="tanggal"
+                    class="clock-date"
+                >
+                    Memuat tanggal...
+                </div>
+
+            </div>
+
+
+            <div class="admin">
+                A
+            </div>
+
+        </div>
+
+    </header>
+
+
+    <section class="content">
+        <div id="dashboardView"></div>
+
+
+        <!-- WELCOME -->
+
+        <div class="welcome">
+
+    <div class="welcome-content">
+
+        <div class="welcome-school">
+            SMK TEUKU UMAR SEMARANG
+        </div>
+
+        <h2>
+            Sistem Absensi Guru & Karyawan
+        </h2>
+
+        <p>
+            Face Recognition Berbasis Web
+        </p>
+
+        <div class="welcome-info">
+
+            <span>
+                📍 Karangrejo, Gajahmungkur, Semarang
+            </span>
+
+            <span>
+                👥 Absensi Guru & Karyawan
+            </span>
+
+        </div>
+
+    </div>
+
+
+    <div class="welcome-logo">
+
+        <img
+            src="https://smkteukuumar.sch.id/wp-content/uploads/2024/07/logo-smk-tu.png"
+            alt="SMK Teuku Umar Semarang"
+        >
+
+    </div>
+
+</div>
+
+
+        <!-- STATISTICS -->
+
+        <div class="stats">
+
+
+            <div class="stat-card">
+
+                <div class="stat-top">
+
+                    <div class="stat-label">
+                        Total Absensi Hari Ini
+                    </div>
+
+                    <div class="stat-icon icon-blue">
+                        📋
+                    </div>
+
+                </div>
+
+
+                <div
+                    id="totalAbsensi"
+                    class="stat-value"
+                >
+                    0
+                </div>
+
+
+                <div class="stat-info">
+                    Semua transaksi hari ini
+                </div>
+
+            </div>
+
+
+            <div class="stat-card">
+
+                <div class="stat-top">
+
+                    <div class="stat-label">
+                        Absen Masuk
+                    </div>
+
+                    <div class="stat-icon icon-green">
+                        🟢
+                    </div>
+
+                </div>
+
+
+                <div
+                    id="totalMasuk"
+                    class="stat-value"
+                >
+                    0
+                </div>
+
+
+                <div class="stat-info">
+                    Kehadiran masuk
+                </div>
+
+            </div>
+
+
+            <div class="stat-card">
+
+                <div class="stat-top">
+
+                    <div class="stat-label">
+                        Absen Pulang
+                    </div>
+
+                    <div class="stat-icon icon-orange">
+                        🔵
+                    </div>
+
+                </div>
+
+
+                <div
+                    id="totalPulang"
+                    class="stat-value"
+                >
+                    0
+                </div>
+
+
+                <div class="stat-info">
+                    Kehadiran pulang
+                </div>
+
+            </div>
+
+
+            <div class="stat-card">
+
+                <div class="stat-top">
+
+                    <div class="stat-label">
+                        Data Wajah
+                    </div>
+
+                    <div class="stat-icon icon-purple">
+                        🧑
+                    </div>
+
+                </div>
+
+
+                <div
+                    id="totalWajah"
+                    class="stat-value"
+                >
+                    0
+                </div>
+
+
+                <div class="stat-info">
+                    Wajah terdaftar
+                </div>
+
+            </div>
+
+
+        </div>
+
+
+        <!-- CONTENT GRID -->
+
+        <div class="dashboard-grid">
+
+
+            <!-- AKTIVITAS -->
+
+            <div class="panel">
+
+                <div class="panel-header">
+
+                    <div>
+
+                        <div class="panel-title">
+                            Aktivitas Absensi Terbaru
+                        </div>
+
+                        <div class="panel-subtitle">
+                            Transaksi absensi hari ini
+                        </div>
+
+                    </div>
+
+
+                    <a
+                        href="laporan.html"
+                        class="panel-link"
+                    >
+                        Lihat semua →
+                    </a>
+
+                </div>
+
+
+                <div
+                    id="aktivitasAbsensi"
+                    class="attendance-list"
+                >
+
+                    <div class="empty">
+                        Memuat aktivitas...
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- KANAN -->
+
+            <div>
+
+
+                <!-- QUICK ACTION -->
+
+                <div
+                    class="panel"
+                    style="margin-bottom:20px;"
+                >
+
+                    <div class="panel-header">
+
+                        <div>
+
+                            <div class="panel-title">
+                                Akses Cepat
+                            </div>
+
+                            <div class="panel-subtitle">
+                                Menu sistem
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="quick-actions">
+
+
+                        <a
+                            class="quick-action"
+                        >
+
+                            <div class="quick-icon">
+                                📷
+                            </div>
+
+                            <div class="quick-title">
+                                Mulai Absensi
+                            </div>
+
+                            <div class="quick-desc">
+                                Identifikasi wajah
+                            </div>
+
+                        </a>
+
+
+                        <a
+                            href="laporan.html"
+                            class="quick-action"
+                        >
+
+                            <div class="quick-icon">
+                                📊
+                            </div>
+
+                            <div class="quick-title">
+                                Laporan
+                            </div>
+
+                            <div class="quick-desc">
+                                Lihat rekap
+                            </div>
+
+                        </a>
+
+
+                        <a
+                            href="guru.html"
+                            class="quick-action"
+                        >
+
+                            <div class="quick-icon">
+                                👨‍🏫
+                            </div>
+
+                            <div class="quick-title">
+                                Data Guru
+                            </div>
+
+                            <div class="quick-desc">
+                                Kelola guru
+                            </div>
+
+                        </a>
+
+
+                        <a
+                            href="karyawan.html"
+                            class="quick-action"
+                        >
+
+                            <div class="quick-icon">
+                                👨‍💼
+                            </div>
+
+                            <div class="quick-title">
+                                Karyawan
+                            </div>
+
+                            <div class="quick-desc">
+                                Kelola karyawan
+                            </div>
+
+                        </a>
+
+
+                    </div>
+
+                </div>
+
+
+                <!-- KEHADIRAN -->
+
+                <div class="panel">
+
+                    <div class="panel-header">
+
+                        <div>
+
+                            <div class="panel-title">
+                                Tingkat Kehadiran
+                            </div>
+
+                            <div class="panel-subtitle">
+                                Berdasarkan data hari ini
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="rate-box">
+
+                        <div
+                            id="persentase"
+                            class="rate-number"
+                        >
+                            0%
+                        </div>
+
+
+                        <div class="progress">
+
+                            <div
+                                id="progressBar"
+                                class="progress-bar"
+                            ></div>
+
+                        </div>
+
+
+                        <div
+                            id="rateDescription"
+                            class="rate-description"
+                        >
+                            Belum ada data absensi.
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+            </div>
+
+        </div>
+            </div>
+
+
+    <!-- =====================================================
+         ABSENSI VIEW
+    ====================================================== -->
+
+    <div id="absensiView">
+
+        <div class="absensi-page">
+
+            <div class="absensi-header">
+
+                <h2>
+                    Absensi Guru & Karyawan
+                </h2>
+
+                <p>
+                    Sistem absensi menggunakan
+                    Face Recognition berbasis web.
+                </p>
+
+            </div>
+
+
+            <div class="absensi-grid">
+
+                <!-- =============================
+                     KAMERA
+                ============================== -->
+
+                <div class="absensi-card">
+
+                    <h2 class="absensi-card-title">
+                        Kamera Absensi
+                    </h2>
+
+
+                    <div class="absensi-camera-box">
+
+                        <video
+                            id="videoAbsensi"
+                            autoplay
+                            muted
+                            playsinline>
+                        </video>
+
+
+                        <div
+                            id="cameraPlaceholder"
+                            class="absensi-camera-placeholder">
+
+                            Klik
+                            <strong>
+                                "Mulai Kamera"
+                            </strong>
+                            &nbsp;untuk memulai.
+
+                        </div>
+
+                    </div>
+
+
+                    <div
+                        id="statusFace"
+                        class="status info">
+
+                        Memuat sistem...
+
+                    </div>
+
+
+                    <div class="absensi-buttons">
+
+                        <button
+                            id="btnKamera"
+                            type="button">
+
+                            📷 Mulai Kamera
+
+                        </button>
+
+
+                        <button
+                            id="btnIdentifikasi"
+                            type="button"
+                            disabled>
+
+                            🧑 Identifikasi Wajah
+
+                        </button>
+
+                    </div>
+
+
+                    <button
+                        id="btnAbsen"
+                        type="button"
+                        disabled>
+
+                        ✓ Simpan Absensi
+
+                    </button>
+
+
+                </div>
+
+
+                <!-- =============================
+                     HASIL
+                ============================== -->
+
+                <div class="absensi-card">
+
+                    <h2 class="absensi-card-title">
+                        Hasil Identifikasi
+                    </h2>
+
+
+                    <div class="absensi-face-count">
+
+                        <span>
+                            Wajah terdaftar
+                        </span>
+
+                        <strong
+                            id="jumlahWajah">
+
+                            -
+
+                        </strong>
+
+                    </div>
+
+
+                    <div
+                        id="hasilAbsensi"
+                        class="absensi-result">
+
+                        <div
+                            class="absensi-result-header">
+
+                            Status Identifikasi
+
+                        </div>
+
+
+                        <div
+                            class="absensi-result-row">
+
+                            <span
+                                class="absensi-label">
+
+                                ID
+
+                            </span>
+
+                            <span
+                                id="hasilId"
+                                class="absensi-value">
+
+                                -
+
+                            </span>
+
+                        </div>
+
+
+                        <div
+                            class="absensi-result-row">
+
+                            <span
+                                class="absensi-label">
+
+                                NIP
+
+                            </span>
+
+                            <span
+                                id="hasilNip"
+                                class="absensi-value">
+
+                                -
+
+                            </span>
+
+                        </div>
+
+
+                        <div
+                            class="absensi-result-row">
+
+                            <span
+                                class="absensi-label">
+
+                                Nama
+
+                            </span>
+
+                            <span
+                                id="hasilNama"
+                                class="absensi-value">
+
+                                -
+
+                            </span>
+
+                        </div>
+
+
+                        <div
+                            class="absensi-result-row">
+
+                            <span
+                                class="absensi-label">
+
+                                Jabatan
+
+                            </span>
+
+                            <span
+                                id="hasilJabatan"
+                                class="absensi-value">
+
+                                -
+
+                            </span>
+
+                        </div>
+
+
+                        <div
+                            class="absensi-result-row">
+
+                            <span
+                                class="absensi-label">
+
+                                Status
+
+                            </span>
+
+                            <span
+                                id="hasilStatus"
+                                class="absensi-value">
+
+                                Belum diidentifikasi
+
+                            </span>
+
+                        </div>
+
+
+                        <div
+                            class="absensi-result-row">
+
+                            <span
+                                class="absensi-label">
+
+                                Distance
+
+                            </span>
+
+                            <span
+                                id="hasilDistance"
+                                class="absensi-value">
+
+                                -
+
+                            </span>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+    </section>
+
+</main>
+
+<script src="Api.js"></script>
+<script src="Absensi.js"></script>
+
+<script>
+
+    /* ========================================
+       JAM REALTIME
+    ======================================== */
+
+    function updateClock() {
+
+        const now =
+            new Date();
+
+
+        document.getElementById(
+            "jam"
+        ).textContent =
+            now.toLocaleTimeString(
+                "id-ID"
+            );
+
+
+        document.getElementById(
+            "tanggal"
+        ).textContent =
+            now.toLocaleDateString(
+                "id-ID",
+                {
+                    weekday: "long",
+                    day: "numeric",
+                    month: "long",
+                    year: "numeric"
+                }
+            );
+
+    }
+
+
+    updateClock();
+
+    setInterval(
+        updateClock,
+        1000
+    );
+
+
+    /* ========================================
+       DASHBOARD
+    ======================================== */
+
+    async function initDashboard() {
+
+        try {
+
+            const laporan =
+                await apiGet(
+                    "laporan"
+                );
+
+
+            console.log(
+                "DASHBOARD LAPORAN:",
+                laporan
+            );
+
+
+            let data = [];
+
+
+            if (
+                laporan &&
+                laporan.success &&
+                Array.isArray(
+                    laporan.data
+                )
+            ) {
+
+                data =
+                    laporan.data;
+
+            }
+
+
+            const today =
+                new Date();
+
+
+            const todayString =
+                today
+                    .toISOString()
+                    .split("T")[0];
+
+
+            const todayData =
+                data.filter(
+                    function(item) {
+
+                        if (!item.Waktu) {
+                            return false;
+                        }
+
+
+                        const d =
+                            new Date(
+                                item.Waktu
+                            );
+
+
+                        if (
+                            isNaN(
+                                d.getTime()
+                            )
+                        ) {
+
+                            return false;
+
+                        }
+
+
+                        return (
+                            d.toISOString()
+                                .split("T")[0]
+                            ===
+                            todayString
+                        );
+
+                    }
+                );
+
+
+            /* TOTAL */
+
+            document.getElementById(
+                "totalAbsensi"
+            ).textContent =
+                todayData.length;
+
+
+            /* MASUK */
+
+            const masuk =
+                todayData.filter(
+                    function(item) {
+
+                        return String(
+                            item.Status || ""
+                        ).toUpperCase()
+                        === "MASUK";
+
+                    }
+                );
+
+
+            document.getElementById(
+                "totalMasuk"
+            ).textContent =
+                masuk.length;
+
+
+            /* PULANG */
+
+            const pulang =
+                todayData.filter(
+                    function(item) {
+
+                        return String(
+                            item.Status || ""
+                        ).toUpperCase()
+                        === "PULANG";
+
+                    }
+                );
+
+
+            document.getElementById(
+                "totalPulang"
+            ).textContent =
+                pulang.length;
+
+
+            /* DATA WAJAH */
+
+            try {
+
+                const face =
+                    await apiGet(
+                        "face"
+                    );
+
+
+                if (
+                    face &&
+                    face.success &&
+                    Array.isArray(
+                        face.data
+                    )
+                ) {
+
+                    document.getElementById(
+                        "totalWajah"
+                    ).textContent =
+                        face.data.length;
+
+                }
+
+            } catch (
+                faceError
+            ) {
+
+                console.error(
+                    "FACE DASHBOARD ERROR:",
+                    faceError
+                );
+
+            }
+
+
+            /* ==================================
+               AKTIVITAS TERBARU
+            ================================== */
+
+            tampilkanAktivitas(
+                todayData
+            );
+
+
+            /* ==================================
+               TINGKAT KEHADIRAN
+            ================================== */
+
+            hitungKehadiran(
+                todayData
+            );
+
+
+        } catch (error) {
+
+            console.error(
+                "DASHBOARD ERROR:",
+                error
+            );
+
+
+            document.getElementById(
+                "aktivitasAbsensi"
+            ).innerHTML = `
+
+                <div class="empty">
+
+                    Gagal memuat aktivitas
+                    absensi.
+
+                </div>
+
+            `;
+
+        }
+
+    }
+
+
+    /* ========================================
+       AKTIVITAS
+    ======================================== */
+
+    function tampilkanAktivitas(
+        data
+    ) {
+
+        const container =
+            document.getElementById(
+                "aktivitasAbsensi"
+            );
+
+
+        if (!data.length) {
+
+            container.innerHTML = `
+
+                <div class="empty">
+
+                    Belum ada aktivitas
+                    absensi hari ini.
+
+                </div>
+
+            `;
+
+            return;
+
+        }
+
+
+        const terbaru =
+            [...data]
+                .sort(
+                    function(a, b) {
+
+                        return new Date(
+                            b.Waktu
+                        ) -
+                        new Date(
+                            a.Waktu
+                        );
+
+                    }
+                )
+                .slice(0, 8);
+
+
+        container.innerHTML =
+            terbaru.map(
+                function(item) {
+
+                    const nama =
+                        item.Nama ||
+                        "-";
+
+
+                    const status =
+                        String(
+                            item.Status ||
+                            ""
+                        ).toUpperCase();
+
+
+                    const waktu =
+                        new Date(
+                            item.Waktu
+                        );
+
+
+                    const jam =
+                        isNaN(
+                            waktu.getTime()
+                        )
+                        ? "-"
+                        : waktu.toLocaleTimeString(
+                            "id-ID",
+                            {
+                                hour: "2-digit",
+                                minute: "2-digit"
+                            }
+                        );
+
+
+                    const avatar =
+                        nama
+                            .trim()
+                            .charAt(0)
+                            .toUpperCase();
+
+
+                    const badge =
+                        status === "MASUK"
+                            ? "badge-masuk"
+                            : "badge-pulang";
+
+
+                    return `
+
+                        <div class="attendance-item">
+
+                            <div class="person-avatar">
+                                ${escapeHtml(avatar)}
+                            </div>
+
+
+                            <div class="person-info">
+
+                                <div class="person-name">
+                                    ${escapeHtml(nama)}
+                                </div>
+
+                                <div class="person-detail">
+
+                                    ${escapeHtml(
+                                        item.NIP || "-"
+                                    )}
+                                    ·
+                                    ${escapeHtml(
+                                        item.Jabatan || "-"
+                                    )}
+
+                                </div>
+
+                            </div>
+
+
+                            <div class="attendance-time">
+
+                                ${jam}
+
+                                <br>
+
+                                <span
+                                    class="badge ${badge}"
+                                >
+                                    ${escapeHtml(status)}
+                                </span>
+
+                            </div>
+
+                        </div>
+
+                    `;
+
+                }
+            )
+            .join("");
+
+    }
+
+
+    /* ========================================
+       KEHADIRAN
+    ======================================== */
+
+    function hitungKehadiran(
+        data
+    ) {
+
+        const pengguna =
+            {};
+
+
+        data.forEach(
+            function(item) {
+
+                const key =
+                    item.ID ||
+                    item.NIP ||
+                    item.Nama;
+
+
+                if (!key) {
+                    return;
+                }
+
+
+                if (
+                    !pengguna[key]
+                ) {
+
+                    pengguna[key] = {
+
+                        masuk: false,
+                        pulang: false
+
+                    };
+
+                }
+
+
+                const status =
+                    String(
+                        item.Status ||
+                        ""
+                    ).toUpperCase();
+
+
+                if (
+                    status === "MASUK"
+                ) {
+
+                    pengguna[key].masuk =
+                        true;
+
+                }
+
+
+                if (
+                    status === "PULANG"
+                ) {
+
+                    pengguna[key].pulang =
+                        true;
+
+                }
+
+            }
+        );
+
+
+        const daftar =
+            Object.values(
+                pengguna
+            );
+
+
+        const total =
+            daftar.length;
+
+
+        const lengkap =
+            daftar.filter(
+                function(item) {
+
+                    return (
+                        item.masuk &&
+                        item.pulang
+                    );
+
+                }
+            ).length;
+
+
+        const persentase =
+            total > 0
+                ? Math.round(
+                    (
+                        lengkap /
+                        total
+                    ) * 100
+                )
+                : 0;
+
+
+        document.getElementById(
+            "persentase"
+        ).textContent =
+            persentase + "%";
+
+
+        document.getElementById(
+            "progressBar"
+        ).style.width =
+            persentase + "%";
+
+
+        document.getElementById(
+            "rateDescription"
+        ).textContent =
+            total > 0
+
+                ? `${lengkap} dari ${total} pengguna
+                   telah menyelesaikan absensi.`
+                    .replace(/\s+/g, " ")
+
+                : "Belum ada data absensi.";
+
+    }
+
+
+    /* ========================================
+       SECURITY
+    ======================================== */
+
+    function escapeHtml(
+        value
+    ) {
+
+        return String(
+            value ?? ""
+        )
+
+        .replace(
+            /&/g,
+            "&amp;"
+        )
+
+        .replace(
+            /</g,
+            "&lt;"
+        )
+
+        .replace(
+            />/g,
+            "&gt;"
+        )
+
+        .replace(
+            /"/g,
+            "&quot;"
+        )
+
+        .replace(
+            /'/g,
+            "&#039;"
+        );
+
+    }
+
+
+    /* ========================================
+       START
+    ======================================== */
+
+    document.addEventListener(
+        "DOMContentLoaded",
+        initDashboard
+    );
+
+</script>
+<script>
+
+/* =========================================================
+   NAVIGASI DASHBOARD → ABSENSI
+========================================================= */
+
+(function () {
+
+    "use strict";
+
+
+    const dashboardView =
+        document.getElementById(
+            "dashboardView"
+        );
+
+
+    const absensiView =
+        document.getElementById(
+            "absensiView"
+        );
+
+
+    const menuAbsensi =
+        document.getElementById(
+            "menuAbsensi"
+        );
+
+
+    const pageTitle =
+        document.querySelector(
+            ".page-title h1"
+        );
+
+
+    const pageSubtitle =
+        document.querySelector(
+            ".page-title p"
+        );
+
+
+    if (
+        !dashboardView ||
+        !absensiView ||
+        !menuAbsensi
+    ) {
+
+        console.error(
+            "View Absensi belum ditemukan."
+        );
+
+        return;
+
+    }
+
+
+    /* =====================================================
+       BUKA ABSENSI
+    ===================================================== */
+
+    function bukaAbsensi() {
+
+        dashboardView.style.display =
+            "none";
+
+
+        absensiView.style.display =
+            "block";
+
+
+        menuAbsensi.classList.add(
+            "active"
+        );
+
+
+        /*
+         * Matikan active menu Dashboard
+         */
+
+        document
+            .querySelectorAll(
+                ".nav-link"
+            )
+            .forEach(
+                function (link) {
+
+                    if (
+                        link !== menuAbsensi
+                    ) {
+
+                        link.classList.remove(
+                            "active"
+                        );
+
+                    }
+
+                }
+            );
+
+
+        /*
+         * Ubah topbar
+         */
+
+        if (pageTitle) {
+
+            pageTitle.textContent =
+                "Absensi";
+
+        }
+
+
+        if (pageSubtitle) {
+
+            pageSubtitle.textContent =
+                "Absensi Guru & Karyawan dengan Face Recognition";
+
+        }
+
+
+        /*
+         * Pastikan Absensi sudah siap.
+         */
+
+        if (
+            typeof initAbsensi ===
+            "function"
+        ) {
+
+            /*
+             * Tidak memuat ulang model
+             * apabila sudah siap.
+             */
+
+            initAbsensi();
+
+        }
+
+
+        console.log(
+            "ABSENSI VIEW AKTIF"
+        );
+
+    }
+    /* =====================================================
+       KEMBALI DASHBOARD
+    ===================================================== */
+
+    function bukaDashboard() {
+
+        absensiView.style.display =
+            "none";
+
+
+        dashboardView.style.display =
+            "block";
+
+
+        menuAbsensi.classList.remove(
+            "active"
+        );
+
+
+        const dashboardMenu =
+            document.querySelector(
+                'a.nav-link[href="dashboard.html"]'
+            );
+
+
+        if (dashboardMenu) {
+
+            dashboardMenu.classList.add(
+                "active"
+            );
+
+        }
+
+
+        if (pageTitle) {
+
+            pageTitle.textContent =
+                "Dashboard";
+
+        }
+
+
+        if (pageSubtitle) {
+
+            pageSubtitle.textContent =
+                "Ringkasan aktivitas absensi hari ini";
+
+        }
+
+
+        /*
+         * Matikan kamera ketika
+         * meninggalkan halaman Absensi.
+         */
+
+        if (
+            typeof hentikanKameraAbsensi ===
+            "function"
+        ) {
+
+            hentikanKameraAbsensi();
+
+        }
+
+
+        console.log(
+            "DASHBOARD VIEW AKTIF"
+        );
+
+    }
+
+
+    /* =====================================================
+       CLICK ABSENSI
+    ===================================================== */
+
+    menuAbsensi.addEventListener(
+        "click",
+        function (event) {
+
+            event.preventDefault();
+
+            bukaAbsensi();
+
+        }
+    );
+
+
+    /* =====================================================
+       DASHBOARD MENU
+    ===================================================== */
+
+    const dashboardMenu =
+        document.querySelector(
+            'a.nav-link[href="dashboard.html"]'
+        );
+
+
+    if (dashboardMenu) {
+
+        dashboardMenu.addEventListener(
+            "click",
+            function (event) {
+
+                event.preventDefault();
+
+                bukaDashboard();
+
+            }
+        );
+
+    }
+
+
+    /* =====================================================
+       GLOBAL
+    ===================================================== */
+
+    window.bukaAbsensi =
+        bukaAbsensi;
+
+    window.bukaDashboard =
+        bukaDashboard;
+
+})();
+
+</script>
+</body>
+
+</html>

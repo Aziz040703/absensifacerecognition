@@ -1,0 +1,1714 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Laporan Absensi</title>
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family:
+                Arial,
+                Helvetica,
+                sans-serif;
+
+            background: #f5f7fb;
+            color: #1f2937;
+        }
+
+        .container {
+            width: 95%;
+            max-width: 1400px;
+            margin: 30px auto;
+        }
+
+        .header {
+            background: white;
+            padding: 24px;
+            border-radius: 16px;
+            box-shadow:
+                0 4px 15px rgba(0,0,0,.06);
+
+            margin-bottom: 20px;
+        }
+
+        .header h1 {
+            font-size: 28px;
+            margin-bottom: 6px;
+        }
+
+        .header p {
+            color: #6b7280;
+        }
+
+        .toolbar {
+            background: white;
+            padding: 18px;
+            border-radius: 16px;
+
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+
+            align-items: end;
+
+            margin-bottom: 20px;
+
+            box-shadow:
+                0 4px 15px rgba(0,0,0,.06);
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .form-group label {
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        input,
+        select {
+            height: 40px;
+            padding: 0 12px;
+
+            border: 1px solid #d1d5db;
+            border-radius: 8px;
+
+            outline: none;
+            background: white;
+        }
+
+        input:focus,
+        select:focus {
+            border-color: #2563eb;
+        }
+
+        button {
+            height: 40px;
+            border: none;
+            border-radius: 8px;
+
+            padding: 0 18px;
+
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        .btn-primary {
+            background: #2563eb;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #1d4ed8;
+        }
+
+        .btn-secondary {
+            background: #e5e7eb;
+            color: #111827;
+        }
+
+        .btn-secondary:hover {
+            background: #d1d5db;
+        }
+
+        .summary {
+            display: grid;
+            grid-template-columns:
+                repeat(4, 1fr);
+
+            gap: 15px;
+
+            margin-bottom: 20px;
+        }
+
+        .card {
+            background: white;
+            border-radius: 14px;
+            padding: 20px;
+
+            box-shadow:
+                0 4px 15px rgba(0,0,0,.06);
+        }
+
+        .card-title {
+            color: #6b7280;
+            font-size: 14px;
+            margin-bottom: 8px;
+        }
+
+        .card-value {
+            font-size: 28px;
+            font-weight: 700;
+        }
+
+        .table-wrapper {
+            background: white;
+
+            border-radius: 16px;
+
+            overflow-x: auto;
+
+            box-shadow:
+                0 4px 15px rgba(0,0,0,.06);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 900px;
+        }
+
+        thead {
+            background: #111827;
+            color: white;
+        }
+
+        th,
+        td {
+            padding: 14px 12px;
+            text-align: left;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        th {
+            font-size: 13px;
+            white-space: nowrap;
+        }
+
+        td {
+            font-size: 14px;
+        }
+
+        tbody tr:hover {
+            background: #f9fafb;
+        }
+
+        .status {
+            display: inline-block;
+            padding: 5px 10px;
+            border-radius: 20px;
+
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+        .status-masuk {
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        .status-pulang {
+            background: #dbeafe;
+            color: #1e40af;
+        }
+
+        .status-hadir {
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        .status-terlambat {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .status-lain {
+            background: #e5e7eb;
+            color: #374151;
+        }
+
+        .loading {
+            padding: 40px;
+            text-align: center;
+            color: #6b7280;
+        }
+
+        .empty {
+            padding: 50px;
+            text-align: center;
+            color: #6b7280;
+        }
+
+        .error {
+            margin-bottom: 20px;
+
+            padding: 15px;
+
+            border-radius: 10px;
+
+            background: #fee2e2;
+            color: #991b1b;
+
+            display: none;
+        }
+
+        @media (max-width: 900px) {
+
+            .summary {
+                grid-template-columns:
+                    repeat(2, 1fr);
+            }
+
+        }
+
+        @media (max-width: 600px) {
+
+            .summary {
+                grid-template-columns: 1fr;
+            }
+
+            .container {
+                width: 92%;
+            }
+
+        }
+        .dashboard-laporan {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.dashboard-card {
+    background: white;
+    border-radius: 14px;
+    padding: 20px;
+
+    display: flex;
+    align-items: center;
+    gap: 15px;
+
+    box-shadow: 0 4px 15px rgba(0,0,0,.06);
+}
+
+.dashboard-icon {
+    width: 48px;
+    height: 48px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 12px;
+    background: #eff6ff;
+
+    font-size: 23px;
+}
+
+.dashboard-label {
+    color: #6b7280;
+    font-size: 13px;
+    margin-bottom: 5px;
+}
+
+.dashboard-value {
+    font-size: 25px;
+    font-weight: 700;
+}
+
+@media (max-width: 900px) {
+
+    .dashboard-laporan {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+}
+
+@media (max-width: 600px) {
+
+    .dashboard-laporan {
+        grid-template-columns: 1fr;
+    }
+
+}
+
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <div class="header">
+
+        <h1>Laporan Absensi</h1>
+
+        <p>
+            Rekap data absensi guru dan karyawan
+        </p>
+
+    </div>
+
+
+    <!-- FILTER -->
+
+    <div class="toolbar">
+
+        <div class="form-group">
+
+            <label for="tanggal">
+                Tanggal
+            </label>
+
+            <input
+                type="date"
+                id="tanggal"
+            >
+
+        </div>
+
+
+        <div class="form-group">
+
+            <label for="search">
+
+                Cari
+
+            </label>
+
+            <input
+                type="text"
+                id="search"
+                placeholder="Nama / NIP"
+            >
+
+        </div>
+
+
+        <div class="form-group">
+
+            <label for="statusFilter">
+
+                Status
+
+            </label>
+
+            <select id="statusFilter">
+
+                <option value="">
+                    Semua
+                </option>
+
+                <option value="MASUK">
+                    MASUK
+                </option>
+
+                <option value="PULANG">
+                    PULANG
+                </option>
+
+                <option value="HADIR">
+                    HADIR
+                </option>
+
+                <option value="TERLAMBAT">
+                    TERLAMBAT
+                </option>
+
+            </select>
+
+        </div>
+
+
+        <button
+            type="button"
+            class="btn-primary"
+            onclick="filterLaporan()"
+        >
+            Tampilkan
+        </button>
+
+
+        <button
+            type="button"
+            class="btn-secondary"
+            onclick="resetFilter()"
+        >
+            Reset
+        </button>
+
+
+        <button
+            type="button"
+            class="btn-secondary"
+            onclick="window.print()"
+        >
+            Cetak
+        </button>
+        <button
+            type="button"
+            class="btn-secondary"
+            onclick="tampilkanRekap()"
+        >
+            Rekap Harian
+        </button>
+        <button
+            type="button"
+            class="btn-secondary"
+            onclick="exportLaporan()"
+        >
+            Export CSV
+        </button>
+
+    </div>
+
+
+    <div
+        id="errorBox"
+        class="error"
+    ></div>
+
+
+    <!-- RINGKASAN -->
+
+    <div class="summary">
+
+        <div class="card">
+
+            <div class="card-title">
+                Total Data
+            </div>
+
+            <div
+                id="totalData"
+                class="card-value"
+            >
+                0
+            </div>
+
+        </div>
+
+
+        <div class="card">
+
+            <div class="card-title">
+                MASUK
+            </div>
+
+            <div
+                id="totalMasuk"
+                class="card-value"
+            >
+                0
+            </div>
+
+        </div>
+
+
+        <div class="card">
+
+            <div class="card-title">
+                PULANG
+            </div>
+
+            <div
+                id="totalPulang"
+                class="card-value"
+            >
+                0
+            </div>
+
+        </div>
+
+
+        <div class="card">
+
+            <div class="card-title">
+                Terlambat
+            </div>
+
+            <div
+                id="totalTerlambat"
+                class="card-value"
+            >
+                0
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <div class="dashboard-laporan">
+
+    <div class="dashboard-card">
+        <div class="dashboard-icon">👥</div>
+        <div>
+            <div class="dashboard-label">Total Pengguna</div>
+            <div id="dashTotalPengguna" class="dashboard-value">0</div>
+        </div>
+    </div>
+
+    <div class="dashboard-card">
+        <div class="dashboard-icon">✅</div>
+        <div>
+            <div class="dashboard-label">Sudah Hadir</div>
+            <div id="dashHadir" class="dashboard-value">0</div>
+        </div>
+    </div>
+
+    <div class="dashboard-card">
+        <div class="dashboard-icon">⏳</div>
+        <div>
+            <div class="dashboard-label">Belum Lengkap</div>
+            <div id="dashBelumLengkap" class="dashboard-value">0</div>
+        </div>
+    </div>
+
+    <div class="dashboard-card">
+        <div class="dashboard-icon">📊</div>
+        <div>
+            <div class="dashboard-label">Kehadiran</div>
+            <div id="dashPersentase" class="dashboard-value">0%</div>
+        </div>
+    </div>
+
+</div>
+
+    <div class="table-wrapper">
+
+        <table>
+
+            <thead>
+
+                <tr>
+
+                    <th>No</th>
+
+                    <th>Waktu</th>
+
+                    <th>ID</th>
+
+                    <th>NIP</th>
+
+                    <th>Nama</th>
+
+                    <th>Jabatan</th>
+
+                    <th>Status</th>
+
+                </tr>
+
+            </thead>
+
+
+            <tbody id="tabelLaporan">
+
+                <tr>
+
+                    <td
+                        colspan="7"
+                        class="loading"
+                    >
+                        Memuat data laporan...
+                    </td>
+
+                </tr>
+
+            </tbody>
+
+        </table>
+
+    </div>
+    <div
+    id="containerRekap"
+    class="table-wrapper"
+    style="display:none; margin-top:20px;"
+>
+
+    <table>
+
+        <thead>
+
+            <tr>
+                <th>No</th>
+                <th>NIP</th>
+                <th>Nama</th>
+                <th>Jabatan</th>
+                <th>Jam Masuk</th>
+                <th>Jam Pulang</th>
+                <th>Status</th>
+            </tr>
+
+        </thead>
+
+        <tbody id="tabelRekap"></tbody>
+
+    </table>
+
+</div>
+
+</div>
+
+
+<!-- ==================================================
+     API
+================================================== -->
+
+
+
+<script>
+
+let semuaDataLaporan = [];
+
+
+/* ==================================================
+   INIT
+================================================== */
+
+document.addEventListener(
+    "DOMContentLoaded",
+    function () {
+
+        muatLaporan();
+
+    }
+);
+
+
+/* ==================================================
+   AMBIL DATA LAPORAN
+================================================== */
+
+async function muatLaporan() {
+
+    tampilkanLoading();
+
+    sembunyikanError();
+
+
+    try {
+
+        const hasil =
+            await apiGet("laporan");
+
+
+        console.log(
+            "LAPORAN FINAL:",
+            hasil
+        );
+
+
+        if (
+            !hasil ||
+            hasil.success === false
+        ) {
+
+            throw new Error(
+                hasil?.message ||
+                "Gagal mengambil data laporan."
+            );
+
+        }
+
+
+        semuaDataLaporan =
+            normalisasiData(
+                hasil.data
+            );
+
+
+        tampilkanLaporan(
+            semuaDataLaporan
+        );
+
+
+    } catch (error) {
+
+        console.error(
+            "LAPORAN ERROR:",
+            error
+        );
+
+
+        tampilkanError(
+            error.message ||
+            "Gagal memuat laporan."
+        );
+
+
+        document.getElementById(
+            "tabelLaporan"
+        ).innerHTML = `
+
+            <tr>
+
+                <td
+                    colspan="7"
+                    class="empty"
+                >
+                    Gagal memuat data laporan.
+                </td>
+
+            </tr>
+
+        `;
+
+    }
+
+}
+
+
+function normalisasiData(data) {
+
+    if (!Array.isArray(data)) {
+        return [];
+    }
+
+    return data.map(function(item) {
+
+        return {
+
+            waktu:
+                item.Waktu || "",
+
+            id:
+                item.ID || "",
+
+            nip:
+                item.NIP || "",
+
+            nama:
+                item.Nama || "",
+
+            jabatan:
+                item.Jabatan || "",
+
+            status:
+                String(
+                    item.Status || ""
+                ).toUpperCase()
+
+        };
+
+    });
+
+}
+function tampilkanLaporan(data) {
+
+    const tbody =
+        document.getElementById(
+            "tabelLaporan"
+        );
+
+
+    if (!data.length) {
+
+        tbody.innerHTML = `
+
+            <tr>
+
+                <td
+                    colspan="7"
+                    class="empty"
+                >
+                    Belum ada data absensi.
+                </td>
+
+            </tr>
+
+        `;
+
+
+        updateSummary([]);
+        updateDashboard([]);
+        return;
+
+    }
+
+
+    tbody.innerHTML =
+        data.map(
+            function (item, index) {
+
+                return `
+
+                    <tr>
+
+                        <td>
+                            ${index + 1}
+                        </td>
+
+                        <td>
+                            ${formatWaktu(item.waktu)}
+                        </td>
+
+                        <td>
+                            ${escapeHtml(item.id)}
+                        </td>
+
+                        <td>
+                            ${escapeHtml(item.nip)}
+                        </td>
+
+                        <td>
+                            <strong>
+                                ${escapeHtml(item.nama)}
+                            </strong>
+                        </td>
+
+                        <td>
+                            ${escapeHtml(item.jabatan)}
+                        </td>
+
+                        <td>
+                            ${buatStatus(item.status)}
+                        </td>
+
+                    </tr>
+
+                `;
+
+            }
+        ).join("");
+
+
+    updateSummary(data);
+    updateDashboard(data);
+
+}
+
+
+/* ==================================================
+   STATUS
+================================================== */
+
+function buatStatus(status) {
+
+    const value =
+        String(
+            status || "-"
+        ).toUpperCase();
+
+
+    let className =
+        "status-lain";
+
+
+    if (value === "MASUK") {
+
+        className =
+            "status-masuk";
+
+    }
+
+    else if (value === "PULANG") {
+
+        className =
+            "status-pulang";
+
+    }
+
+    else if (value === "HADIR") {
+
+        className =
+            "status-hadir";
+
+    }
+
+    else if (
+        value.includes("TERLAMBAT")
+    ) {
+
+        className =
+            "status-terlambat";
+
+    }
+
+
+    return `
+
+        <span
+            class="status ${className}"
+        >
+            ${escapeHtml(value)}
+        </span>
+
+    `;
+
+}
+
+
+/* ==================================================
+   FILTER
+================================================== */
+
+function filterLaporan() {
+
+    const tanggal =
+        document.getElementById(
+            "tanggal"
+        ).value;
+
+
+    const search =
+        document.getElementById(
+            "search"
+        ).value
+        .toLowerCase()
+        .trim();
+
+
+    const status =
+        document.getElementById(
+            "statusFilter"
+        ).value
+        .toUpperCase();
+
+
+    const hasil =
+        semuaDataLaporan.filter(
+            function (item) {
+
+                let cocok =
+                    true;
+
+
+                /*
+                 * FILTER TANGGAL
+                 */
+
+                if (tanggal) {
+
+                    const waktu =
+                        new Date(
+                            item.waktu
+                        );
+
+
+                    if (
+                        !isNaN(
+                            waktu.getTime()
+                        )
+                    ) {
+
+                        const tanggalItem =
+                            waktu
+                                .toISOString()
+                                .split("T")[0];
+
+
+                        if (
+                            tanggalItem !==
+                            tanggal
+                        ) {
+
+                            cocok =
+                                false;
+
+                        }
+
+                    }
+
+                }
+
+
+                /*
+                 * FILTER SEARCH
+                 */
+
+                if (
+                    search &&
+                    !(
+                        String(
+                            item.nama
+                        )
+                        .toLowerCase()
+                        .includes(search)
+
+                        ||
+
+                        String(
+                            item.nip
+                        )
+                        .toLowerCase()
+                        .includes(search)
+                    )
+                ) {
+
+                    cocok =
+                        false;
+
+                }
+
+
+                /*
+                 * FILTER STATUS
+                 */
+
+                if (
+                    status &&
+                    item.status !== status
+                ) {
+
+                    cocok =
+                        false;
+
+                }
+
+
+                return cocok;
+
+            }
+        );
+
+
+    tampilkanLaporan(
+        hasil
+    );
+
+}
+
+
+/* ==================================================
+   RESET FILTER
+================================================== */
+
+function resetFilter() {
+
+    document.getElementById("tanggal").value = "";
+    document.getElementById("search").value = "";
+    document.getElementById("statusFilter").value = "";
+
+    document.getElementById("containerRekap").style.display = "none";
+
+    tampilkanLaporan(semuaDataLaporan);
+
+}
+
+function updateSummary(data) {
+
+    document.getElementById(
+        "totalData"
+    ).textContent =
+        data.length;
+
+
+    document.getElementById(
+        "totalMasuk"
+    ).textContent =
+        data.filter(
+            item =>
+                item.status === "MASUK"
+        ).length;
+
+
+    document.getElementById(
+        "totalPulang"
+    ).textContent =
+        data.filter(
+            item =>
+                item.status === "PULANG"
+        ).length;
+
+
+    document.getElementById(
+        "totalTerlambat"
+    ).textContent =
+        data.filter(
+            item =>
+                item.status.includes(
+                    "TERLAMBAT"
+                )
+        ).length;
+
+}
+
+
+/* ==================================================
+   LOADING
+================================================== */
+
+function tampilkanLoading() {
+
+    document.getElementById(
+        "tabelLaporan"
+    ).innerHTML = `
+
+        <tr>
+
+            <td
+                colspan="7"
+                class="loading"
+            >
+                Memuat data laporan...
+            </td>
+
+        </tr>
+
+    `;
+
+}
+
+
+/* ==================================================
+   ERROR
+================================================== */
+
+function tampilkanError(message) {
+
+    const box =
+        document.getElementById(
+            "errorBox"
+        );
+
+
+    box.textContent =
+        message;
+
+
+    box.style.display =
+        "block";
+
+}
+
+
+function sembunyikanError() {
+
+    const box =
+        document.getElementById(
+            "errorBox"
+        );
+
+
+    box.style.display =
+        "none";
+
+}
+
+
+/* ==================================================
+   FORMAT WAKTU
+================================================== */
+
+function formatWaktu(value) {
+
+    if (!value) {
+
+        return "-";
+
+    }
+
+
+    const date =
+        new Date(value);
+
+
+    if (
+        isNaN(
+            date.getTime()
+        )
+    ) {
+
+        return escapeHtml(
+            String(value)
+        );
+
+    }
+
+
+    return date.toLocaleString(
+        "id-ID",
+        {
+            dateStyle: "medium",
+            timeStyle: "medium"
+        }
+    );
+
+}
+
+
+/* ==================================================
+   SECURITY
+================================================== */
+
+function escapeHtml(value) {
+
+    return String(
+        value ?? ""
+    )
+    .replace(
+        /&/g,
+        "&amp;"
+    )
+    .replace(
+        /</g,
+        "&lt;"
+    )
+    .replace(
+        />/g,
+        "&gt;"
+    )
+    .replace(
+        /"/g,
+        "&quot;"
+    )
+    .replace(
+        /'/g,
+        "&#039;"
+    );
+
+}
+function tampilkanRekap() {
+
+    const container =
+        document.getElementById(
+            "containerRekap"
+        );
+
+    const tbody =
+        document.getElementById(
+            "tabelRekap"
+        );
+
+    const tanggal =
+        document.getElementById(
+            "tanggal"
+        ).value;
+
+    const data =
+        semuaDataLaporan.filter(
+            function(item) {
+
+                if (!tanggal) {
+                    return true;
+                }
+
+                const d =
+                    new Date(item.waktu);
+
+                if (isNaN(d.getTime())) {
+                    return false;
+                }
+
+                return (
+                    d.toISOString()
+                        .split("T")[0]
+                    === tanggal
+                );
+
+            }
+        );
+
+
+    const rekap = {};
+
+
+    data.forEach(function(item) {
+
+        const key =
+            item.id ||
+            item.nip ||
+            item.nama;
+
+
+        if (!rekap[key]) {
+
+            rekap[key] = {
+
+                id: item.id,
+                nip: item.nip,
+                nama: item.nama,
+                jabatan: item.jabatan,
+
+                masuk: null,
+                pulang: null
+
+            };
+
+        }
+
+
+        if (
+            item.status === "MASUK"
+        ) {
+
+            rekap[key].masuk =
+                item.waktu;
+
+        }
+
+
+        if (
+            item.status === "PULANG"
+        ) {
+
+            rekap[key].pulang =
+                item.waktu;
+
+        }
+
+    });
+
+
+    const hasil =
+        Object.values(rekap);
+
+
+    if (!hasil.length) {
+
+        tbody.innerHTML = `
+            <tr>
+                <td
+                    colspan="7"
+                    class="empty"
+                >
+                    Belum ada data rekap.
+                </td>
+            </tr>
+        `;
+
+    } else {
+
+        tbody.innerHTML =
+            hasil.map(
+                function(item, index) {
+
+                    let status =
+                        "Belum Lengkap";
+
+
+                    if (
+                        item.masuk &&
+                        item.pulang
+                    ) {
+
+                        status =
+                            "Hadir";
+
+                    } else if (
+                        item.masuk
+                    ) {
+
+                        status =
+                            "Belum Pulang";
+
+                    }
+
+
+                    return `
+
+                        <tr>
+
+                            <td>
+                                ${index + 1}
+                            </td>
+
+                            <td>
+                                ${escapeHtml(
+                                    item.nip
+                                )}
+                            </td>
+
+                            <td>
+                                <strong>
+                                    ${escapeHtml(
+                                        item.nama
+                                    )}
+                                </strong>
+                            </td>
+
+                            <td>
+                                ${escapeHtml(
+                                    item.jabatan
+                                )}
+                            </td>
+
+                            <td>
+                                ${
+                                    item.masuk
+                                    ? formatWaktu(
+                                        item.masuk
+                                    )
+                                    : "-"
+                                }
+                            </td>
+
+                            <td>
+                                ${
+                                    item.pulang
+                                    ? formatWaktu(
+                                        item.pulang
+                                    )
+                                    : "-"
+                                }
+                            </td>
+
+                            <td>
+                                ${buatStatus(
+                                    status
+                                )}
+                            </td>
+
+                        </tr>
+
+                    `;
+
+                }
+            ).join("");
+
+    }
+
+
+    container.style.display =
+        "block";
+
+}
+function updateDashboard(data) {
+
+    const pengguna = {};
+
+    data.forEach(function(item) {
+
+        const key =
+            item.id ||
+            item.nip ||
+            item.nama;
+
+        if (!key) return;
+
+        if (!pengguna[key]) {
+
+            pengguna[key] = {
+                masuk: false,
+                pulang: false
+            };
+
+        }
+
+        if (item.status === "MASUK") {
+            pengguna[key].masuk = true;
+        }
+
+        if (item.status === "PULANG") {
+            pengguna[key].pulang = true;
+        }
+
+    });
+
+
+    const daftar =
+        Object.values(pengguna);
+
+
+    const total =
+        daftar.length;
+
+
+    const hadir =
+        daftar.filter(function(item) {
+
+            return (
+                item.masuk &&
+                item.pulang
+            );
+
+        }).length;
+
+
+    const belumLengkap =
+        daftar.filter(function(item) {
+
+            return !(
+                item.masuk &&
+                item.pulang
+            );
+
+        }).length;
+
+
+    const persentase =
+        total > 0
+            ? Math.round(
+                (hadir / total) * 100
+              )
+            : 0;
+
+
+    document.getElementById(
+        "dashTotalPengguna"
+    ).textContent = total;
+
+
+    document.getElementById(
+        "dashHadir"
+    ).textContent = hadir;
+
+
+    document.getElementById(
+        "dashBelumLengkap"
+    ).textContent = belumLengkap;
+
+
+    document.getElementById(
+        "dashPersentase"
+    ).textContent =
+        persentase + "%";
+
+}
+function exportLaporan() {
+
+    const tanggal =
+        document.getElementById("tanggal").value;
+
+    const search =
+        document.getElementById("search")
+            .value
+            .toLowerCase()
+            .trim();
+
+    const status =
+        document.getElementById("statusFilter")
+            .value
+            .toUpperCase();
+
+    const data =
+        semuaDataLaporan.filter(function(item) {
+
+            let cocok = true;
+
+            if (tanggal) {
+
+                const d = new Date(item.waktu);
+
+                if (
+                    !isNaN(d.getTime()) &&
+                    d.toISOString().split("T")[0] !== tanggal
+                ) {
+                    cocok = false;
+                }
+            }
+
+            if (
+                search &&
+                !String(item.nama)
+                    .toLowerCase()
+                    .includes(search) &&
+                !String(item.nip)
+                    .toLowerCase()
+                    .includes(search)
+            ) {
+                cocok = false;
+            }
+
+            if (
+                status &&
+                item.status !== status
+            ) {
+                cocok = false;
+            }
+
+            return cocok;
+
+        });
+
+
+    if (!data.length) {
+
+        alert("Tidak ada data untuk diekspor.");
+
+        return;
+    }
+
+
+    const header = [
+        "No",
+        "Waktu",
+        "ID",
+        "NIP",
+        "Nama",
+        "Jabatan",
+        "Status"
+    ];
+
+
+    const rows = data.map(
+        function(item, index) {
+
+            return [
+                index + 1,
+                formatWaktu(item.waktu),
+                item.id,
+                item.nip,
+                item.nama,
+                item.jabatan,
+                item.status
+            ];
+
+        }
+    );
+
+
+    const csv = [
+        header,
+        ...rows
+    ]
+    .map(function(row) {
+
+        return row.map(function(value) {
+
+            return '"' +
+                String(value ?? "")
+                    .replace(/"/g, '""') +
+                '"';
+
+        }).join(",");
+
+    })
+    .join("\r\n");
+
+
+    const blob =
+        new Blob(
+            ["\uFEFF" + csv],
+            {
+                type:
+                    "text/csv;charset=utf-8;"
+            }
+        );
+
+
+    const url =
+        URL.createObjectURL(blob);
+
+
+    const link =
+        document.createElement("a");
+
+    link.href = url;
+
+    link.download =
+        "laporan-absensi-" +
+        new Date()
+            .toISOString()
+            .split("T")[0] +
+        ".csv";
+
+    document.body.appendChild(link);
+
+    link.click();
+
+    document.body.removeChild(link);
+
+    URL.revokeObjectURL(url);
+
+}
+</script>
+<script src="./Api.js"></script>
+<script src="Auth.js"></script>
+<script src="Laporan.js"></script>
+
+</body>
+</html>

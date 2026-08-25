@@ -14,7 +14,7 @@ document.addEventListener(
         if (!session) {
 
             window.location.replace(
-                "Login.html"
+                "login.html"
             );
 
             return;
@@ -37,7 +37,7 @@ document.addEventListener(
             );
 
             window.location.replace(
-                "Login.html"
+                "login.html"
             );
 
         return;
